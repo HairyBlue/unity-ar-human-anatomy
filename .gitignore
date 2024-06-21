@@ -71,6 +71,11 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
+
+# READ THIS BEFORE BUILDING 
+# Import A TEXT MESH PRO FROM PACKAGE MANAGER > Unity Registry
+# Import Vuforia Engine from the site
+
 /[Aa]ssets/Editor
 /[Aa]ssets/Resources
 /[Aa]ssets/TextMesh Pro
