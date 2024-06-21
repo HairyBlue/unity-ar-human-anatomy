@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Opening.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/Explore.unity
+    guid: d1097abee73034c46816c4aa26903dd5
+  - enabled: 1
+    path: Assets/Scenes/Menu.unity
+    guid: 223f8a9fdbf5e9842a12373017a40ff0
+  - enabled: 1
+    path: Assets/Scenes/BodyOrganTracker.unity
+    guid: 22da40bdea1c79b4eaf3dbb36bac2a2d
+  m_configObjects: {}
