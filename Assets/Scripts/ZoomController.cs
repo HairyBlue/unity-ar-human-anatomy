@@ -8,7 +8,7 @@ public class ZoomController : MonoBehaviour, IPointerDownHandler, IPointerUpHand
     public GameObject[] objectsToZoom;
     public float zoomSpeed = 10f; // Speed of zooming
     public float minZoom = -50f; // Minimum Z position
-    public float maxZoom = 1000f; // Maximum Z position
+    public float maxZoom = 50f; // Maximum Z position
 
     public bool isZoomingIn = false;
     public bool isZoomingOut = false;
