@@ -42,7 +42,7 @@ public class Message{
         "Invalid Server Address",
         "Invalid Server Port",
         "Valid Server Address and Port",
-        "Server is OFFLINE. Please Go to the MENU to connect to the server"
+        "You are not connected to the server. Please Go to the MENU to connect to the server"
     };
 
 

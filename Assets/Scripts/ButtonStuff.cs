@@ -13,7 +13,7 @@ public class ButtonStuff : MonoBehaviour
      // Some Stuff for button a wierd implementaion but it works
 
     SaveLoadManager saveLoadManager = new SaveLoadManager();
-    AppConfig config;
+    AppLogger logger;
 
     private TcpClient client;
     private Coroutine checkValidAddress;
@@ -65,10 +65,10 @@ public class ButtonStuff : MonoBehaviour
             prev.SetActive(false);
             PlayerData playerData = saveLoadManager.LoadPlayerData();
             
-            config =  gameObject.AddComponent<AppConfig>();
+            logger =  gameObject.AddComponent<AppLogger>();
             if(playerData != null){
                 saveLoadManager.EndTime();
-                config.LogInstruction();
+                logger.LogInstruction();
             }
         }
     }
@@ -76,7 +76,7 @@ public class ButtonStuff : MonoBehaviour
     public void EnableMenu(){
         menuSettings = FindAnyObjectByType<MenuSettings>();
         GameObject menu = menuSettings.menuPanel;
-        config =  gameObject.AddComponent<AppConfig>();
+        logger =  gameObject.AddComponent<AppLogger>();
 
         if(menu != null){
             if(!menu.activeSelf){
@@ -85,7 +85,7 @@ public class ButtonStuff : MonoBehaviour
             }else{
                 menu.SetActive(false);
                 saveLoadManager.EndTime();
-                config.LogMenu();
+                logger.LogMenu();
             }
         }
     }
@@ -134,7 +134,9 @@ public class ButtonStuff : MonoBehaviour
                         // personal info change but same uuid
                         string currentUUID = playerData.playerUUID;
                         if(currentUUID != null){
+                            logger =  gameObject.AddComponent<AppLogger>();
                             saveLoadManager.SavePlayerData(nameStr, ageInt.ToString(), gendetStr, currentUUID);
+                            logger.LogPlayerInfoChange();
                         }                       
                     }else{
 
@@ -234,6 +236,7 @@ public class ButtonStuff : MonoBehaviour
             }
             else
             {
+                saveLoadManager.StartTime();
                 SceneManager.LoadScene(Store.ARSceneBodyOrgan);
             }
         }

@@ -54,17 +54,17 @@ public class AddInfo : MonoBehaviour
                     personalInfoStatus.text = personalInfoTexts[0];
                     personalInfoStatus.color = Color.green;
 
-                    AppConfig config = gameObject.AddComponent<AppConfig>();
+                    AppLogger logger = gameObject.AddComponent<AppLogger>();
 
                     // SaveLoadManager saveLoadManager = gameObject.AddComponent<SaveLoadManager>();
                     Guid uuid = Guid.NewGuid();
                     string uuidString = uuid.ToString();
 
                     saveLoadManager.SavePlayerData(nameStr, ageInt.ToString(), gendetStr, uuidString);
-                    config.CreateLogFile();
+                    logger.CreateLogFile();
                     isValidToAdd = true;
                     saveLoadManager.EndTime();
-                    config.LogOnBoarding();
+                    logger.LogOnBoarding();
                 } 
                 else
                 {
