@@ -96,40 +96,43 @@ public class Stuff : MonoBehaviour
         Debug.Log(Application.persistentDataPath);
 
         PlayerData playerData = saveLoadManager.LoadPlayerData();
-        
-        if (Directory.Exists(logsFolderPath))
+
+        if (playerData != null) 
         {
-            string file = Path.Combine(logsFolderPath, playerData.playerUUID + ".log" );
+            if ( Directory.Exists(logsFolderPath))
+            {
+                string file = Path.Combine(logsFolderPath, playerData.playerUUID + ".log" );
 
-            if (File.Exists(file)) {
-                string[] lines = File.ReadAllLines(file);
+                if (File.Exists(file)) {
+                    string[] lines = File.ReadAllLines(file);
 
-                foreach (string line in lines) {
-                    if (string.IsNullOrWhiteSpace(line)) {
-                        continue;
-                    }
-                    // UserInfo userInfo = JsonUtility.FromJson<UserInfo>(line);
-                    // if (userInfo.uuid != null)
-                    // {
-                    //     Debug.Log($"UUID: {userInfo.uuid}, Age: {userInfo.age}, Gender: {userInfo.gender}");
-                    //     continue;
-                    // }
-               
-                    TopicInfo topicInfo = JsonUtility.FromJson<TopicInfo>(line);
-                    if (topicInfo.topic != null)
-                    {
-                        Debug.Log($"Topic: {topicInfo.topic}, StartTime: {topicInfo.startTime}, EndTime: {topicInfo.endTime}, EllapsedTime: {topicInfo.ellapsedTime}");
-                        if ( IntsructionPanel != null && topicInfo.topic == "onboarding") {                   
-                            if (IntsructionPanel.activeSelf){
-                                IntsructionPanel.SetActive(false);
-                                instruction1.SetActive(false);
-                            }
-                            if ( AddInfo != null && AddInfo.activeSelf) {
-                                AddInfo.SetActive(false);
+                    foreach (string line in lines) {
+                        if (string.IsNullOrWhiteSpace(line)) {
+                            continue;
+                        }
+                        // UserInfo userInfo = JsonUtility.FromJson<UserInfo>(line);
+                        // if (userInfo.uuid != null)
+                        // {
+                        //     Debug.Log($"UUID: {userInfo.uuid}, Age: {userInfo.age}, Gender: {userInfo.gender}");
+                        //     continue;
+                        // }
+                
+                        TopicInfo topicInfo = JsonUtility.FromJson<TopicInfo>(line);
+                        if (topicInfo.topic != null)
+                        {
+                            Debug.Log($"Topic: {topicInfo.topic}, StartTime: {topicInfo.startTime}, EndTime: {topicInfo.endTime}, EllapsedTime: {topicInfo.ellapsedTime}");
+                            if ( IntsructionPanel != null && topicInfo.topic == "onboarding") {                   
+                                if (IntsructionPanel.activeSelf){
+                                    IntsructionPanel.SetActive(false);
+                                    instruction1.SetActive(false);
+                                }
+                                if ( AddInfo != null && AddInfo.activeSelf) {
+                                    AddInfo.SetActive(false);
+                                }
                             }
                         }
-                    }
 
+                    }
                 }
             }
         }

@@ -34,8 +34,9 @@ public class ZoomController : MonoBehaviour, IPointerDownHandler, IPointerUpHand
             {
                 Vector3 newPosition = obj.transform.position + new Vector3(0, 0, zoomSpeed * Time.deltaTime);
                 newPosition.z = Mathf.Clamp(newPosition.z, minZoom, maxZoom);
+                newPosition.y = 0;
+                newPosition.x = 0;
                 obj.transform.position = newPosition;
-
             }
         }
     }
@@ -48,6 +49,8 @@ public class ZoomController : MonoBehaviour, IPointerDownHandler, IPointerUpHand
             {
                 Vector3 newPosition = obj.transform.position - new Vector3(0, 0, zoomSpeed * Time.deltaTime);
                 newPosition.z = Mathf.Clamp(newPosition.z, minZoom, maxZoom);
+                newPosition.y = 0;
+                newPosition.x = 0;
                 obj.transform.position = newPosition;
             }
         }
