@@ -6,12 +6,10 @@ using System.Text.RegularExpressions;
 using System;
 using System.Net.Sockets;
 using UnityEngine.SceneManagement;
-using UnityEditor.SceneManagement;
+
 public class ButtonStuff : MonoBehaviour
 {
-
      // Some Stuff for button a wierd implementaion but it works
-
     SaveLoadManager saveLoadManager = new SaveLoadManager();
     AppLogger logger;
 

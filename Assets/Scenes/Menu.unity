@@ -4009,6 +4009,7 @@ MonoBehaviour:
   ToARScenceButtonErrorText: {fileID: 1158336044}
   QueueingMessageText: {fileID: 0}
   ServerStatusText: {fileID: 0}
+  warmIfZoomingText: {fileID: 0}
 --- !u!1 &350271669
 GameObject:
   m_ObjectHideFlags: 0
@@ -17892,6 +17893,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b57830b839c27d48b0cf052b7fbc20f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AddInfo: {fileID: 1642375972}
   IntsructionPanel: {fileID: 216322567}
   instruction1: {fileID: 1005892515}
   AboutPanel: {fileID: 1771863357}
@@ -17928,6 +17930,7 @@ MonoBehaviour:
   ToARScenceButtonErrorText: {fileID: 1158336044}
   QueueingMessageText: {fileID: 0}
   ServerStatusText: {fileID: 0}
+  warmIfZoomingText: {fileID: 0}
 --- !u!1 &1948471770
 GameObject:
   m_ObjectHideFlags: 0

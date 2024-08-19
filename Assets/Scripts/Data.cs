@@ -70,3 +70,21 @@ public class OnboardingLog{
 public class BodyOrganName{
     public string name;
 }
+
+
+[System.Serializable]
+public class UserInfo
+{
+    public string uuid;
+    public string age;
+    public string gender;
+}
+
+[System.Serializable]
+public class TopicInfo
+{
+    public string topic;
+    public string startTime;
+    public string endTime;
+    public string ellapsedTime;
+}

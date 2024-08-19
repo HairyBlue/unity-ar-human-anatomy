@@ -21,8 +21,6 @@ public class AddInfo : MonoBehaviour
     private readonly string PlayerDataKey = Store.PlayerDataKey;
 
 
-
-
     private bool isValidToAdd = false;
 
     public void SaveAddedPersonalInfo(){
