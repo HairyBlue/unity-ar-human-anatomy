@@ -17,7 +17,7 @@ ipconfig # or ipconfig /all
 ```
 This will display your network configuration, then find ipv4 based on your router ip address
 
-On Mac, ( ･ั﹏･ั) \
+On Mac, ( ･ั﹏･ั)
 [visit this site](https://www.wikihow.com/Find-Your-IP-Address-on-a-Mac)
 
 On Linux, (੭•̀ᴗ•̀)੭✧ ヽ( ´ ∇ ｀ )ノ  (╯°□°)╯︵ ┻━┻
