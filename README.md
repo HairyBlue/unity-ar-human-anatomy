@@ -1,6 +1,9 @@
 # Unity Project For Mobile Augmented Reality In Human Anatomy (￣▽￣)ノ
 This project demonstrates the use of body tracking in mobile augmented reality to study human anatomy. The application allows users to interact with anatomical models using real-time body movements.
 
+## Updates (つД`)ノ
+As of now this, this project is under development we will add soon the links to download the app. (｡•̀ᴗ-)✧
+
 ## Prerequisites (°ロ°)☝
 - Android phone
 - Minimum aspect ratio of 16:9
