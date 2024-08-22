@@ -6,8 +6,8 @@ As of now this project is under development, links will provided soon to downloa
 
 ## Prerequisites (°ロ°)☝
 - Android phone
-- Minimum aspect ratio of 16:9
-  iOS, tablet or ipad currently not supported
+- Minimum aspect ratio of 16:9\
+`iOS, tablet or ipad not supported (｡•́︿•̀｡)`
 
 ## Connecting To Services (｡T ω T｡)
 Visit the [other repository](https://github.com/HairyBlue/body-track-project) to run the services\
