@@ -11,7 +11,7 @@ As of now this project is under development, links will provided soon to downloa
 
 ## Connecting To Services (｡T ω T｡)
 Visit the [other repository](https://github.com/HairyBlue/body-track-project) to run the services\
-After you setup the services, on the `Menu` there an form where you will add the `ip address and port` in order to connect to the server\
+After you setup the services, on the `Menu` there an form where you will add the `ip address and port` in order to connect to the server
 
 ## Getting the Ip Address of the machine (－_－) zzZ
 On Windows, open Command Prompt (cmd) or PowerShell, then type
