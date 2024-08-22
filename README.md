@@ -29,7 +29,7 @@ On Linux, (੭•̀ᴗ•̀)੭✧ ヽ( ´ ∇ ｀ )ノ  (╯°□°)╯︵ ┻�
 #### Youtube
 [Find your computer ip address | how to | Windows 10 | 2021](https://www.youtube.com/watch?v=mdp3HtO7Cjs)\
 [How to Find IP Address on Windows 11 & Windows 10, Easiest Method to view IP Address on Windows PC](https://www.youtube.com/watch?v=_FHuWzC8BKE)\
-[How to Show IP ADDRESS on Apple Mac](https://www.youtube.com/watch?v=IZE548Dp4HA)\
+[How to Show IP ADDRESS on Apple Mac](https://www.youtube.com/watch?v=IZE548Dp4HA)
 
 #### Similar Project
 For further exploration of similar projects or additional modules related to mobile augmented reality and human anatomy, refer to the [body-track-project](https://github.com/HairyBlue/body-track-project)
