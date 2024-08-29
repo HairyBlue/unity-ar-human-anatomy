@@ -157,7 +157,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 31, y: 463}
+  m_AnchoredPosition: {x: 31, y: 551}
   m_SizeDelta: {x: 717.3651, y: 179.11206}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &539091471
@@ -425,7 +425,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 13, y: -44}
+  m_AnchoredPosition: {x: 13, y: -120}
   m_SizeDelta: {x: 908.8877, y: 356.0919}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &865734189
@@ -448,10 +448,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ' AR Human anatomy is a  lorem ipsum rj is good'
+  m_text: AR Human Anatomy is an augmented reality application that allows users
+    to explore and interact with 3D models of the human body. It enhances learning
+    by providing a detailed and immersive view of anatomical  structures.
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: b975a4f0cf7872242ab7d7a6c7597307, type: 2}
-  m_sharedMaterial: {fileID: 7414818834765934498, guid: b975a4f0cf7872242ab7d7a6c7597307, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -475,15 +477,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 86.96
-  m_fontSizeBase: 86.96
+  m_fontSize: 78
+  m_fontSizeBase: 78
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
   m_HorizontalAlignment: 8
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -886,7 +888,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 103, y: 408.42}
+  m_AnchoredPosition: {x: 103, y: 496}
   m_SizeDelta: {x: 190.95, y: 169.9456}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1226714316
@@ -1597,7 +1599,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 31, y: 724}
+  m_AnchoredPosition: {x: 31, y: 788}
   m_SizeDelta: {x: 444.4457, y: -33.7579}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2086496977

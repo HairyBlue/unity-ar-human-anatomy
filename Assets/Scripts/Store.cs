@@ -45,7 +45,4 @@ public class Message{
         "You are not connected to the server. Please Go to the MENU to connect to the server"
     };
 
-
-
-
 }

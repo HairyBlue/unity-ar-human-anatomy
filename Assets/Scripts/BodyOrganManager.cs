@@ -2,13 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
+using System.Linq;
 
 public class BodyOrganManager : MonoBehaviour
 {
-    [Header("Organs Pannel")]
+    [Header("Organs Pannel and Instruction")]
 
     [SerializeField]
     private GameObject OrganPanel;
+    [SerializeField]
+    private GameObject bodyOrganInstruction;
 
     [Header("Attached Organ Objects")]
     [SerializeField]
@@ -17,6 +21,7 @@ public class BodyOrganManager : MonoBehaviour
     [Header("Attached Toggle Controller")]
      [SerializeField]
     private GameObject toggelControler;
+
     [SerializeField]
     private GameObject toggelZoomEnable;
     public GameObject zoomWrapper;
@@ -31,16 +36,33 @@ public class BodyOrganManager : MonoBehaviour
         OrganPanel.SetActive(!OrganPanel.activeSelf);
     }
 
+    public void OnClickViewInstruction() {
+        bodyOrganInstruction.SetActive(!bodyOrganInstruction.activeSelf);
+    }
 
+    public void CheckObjectOrganNames(string organNameLC) {
+         string[] supportedOrgans = new string[7]{"brain",  "heart", "lungs", "kidney", "liver", "stomach", "intestine"};
+         int idx = Array.IndexOf(supportedOrgans, organNameLC);
+         if (idx == -1) {
+            string joinStr =  String.Join(", ", supportedOrgans);
+            Debug.LogError("Either wrong type or wrong spelling object name of organ under AR Camera, => " + organNameLC + " | Supported Organ Names ff: " + joinStr);
+    
+         }
+
+    }
     public void OnToggleOrgan(GameObject organToggler){
+        string organNameLC = organToggler.name.ToLower();
 
-        saveLoadManager.SavaBodyOrganName("heart");
+        OnClickRemoveActive();
+        CheckObjectOrganNames(organNameLC);
+        saveLoadManager.SavaBodyOrganName(organNameLC);
+        // Debug.Log(organToggler.name.ToLower());
         organToggler.SetActive(true);
     }
 
     public void OnClickRemoveActive(){
         foreach(GameObject organ in Organs){
-            if(organ.activeSelf){
+            if (organ.activeSelf) {
                 organ.SetActive(false);
             }
         } 
