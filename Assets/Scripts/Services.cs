@@ -24,9 +24,21 @@ public class QueueMessage
     public string queue;
 }
 
+
+[Serializable]
+public class PositionRotation
+{
+    public float positionX;
+    public float positionY;
+    public float positionZ;
+
+    public float rotationX;
+    public float rotationY;
+    public float rotationZ;
+}
+
 public class Services : MonoBehaviour
 {
-    public GameObject[] organs; 
     const PixelFormat PIXEL_FORMAT = PixelFormat.RGB888;
     const TextureFormat TEXTURE_FORMAT = TextureFormat.RGB24;
 
@@ -41,16 +53,26 @@ public class Services : MonoBehaviour
     private bool isConnected = false;
 
 
-    private float reconnectInterval = 5f; // Seconds to wait before trying to reconnect
+    private float reconnectInterval = 5f; 
     private Coroutine reconnectCoroutine;
     SaveLoadManager saveLoadManager = new SaveLoadManager();
 
     private Popups popups;
     private BodyOrganManager bodyOrganManager;
 
+    public TMP_Dropdown UserRole;
+    private string userRoleStr = "";
+
+    private Vector3 previousPosition = Vector3.zero;
+    private Quaternion previousRotation = Quaternion.identity;
+
     void Start()
     {
+        TMP_Dropdown role = UserRole;
+        userRoleStr = role.options[role.value].text;
 
+        PlayerData playerData = saveLoadManager.LoadPlayerData();
+        BodyOrganName bodyOrganName = saveLoadManager.LoadBodyOrganName();
         ServerData serverData = saveLoadManager.LoadServerData();
 
         serverAddress = serverData.serverAddress;
@@ -70,65 +92,188 @@ public class Services : MonoBehaviour
 
     void Update()
     {
-        if (!isConnected && !isConnecting)
-        {
-            ConnectToServer();
-        }
+        TMP_Dropdown role = UserRole;
+        userRoleStr = role.options[role.value].text;
+    
+        ConnectToServer();
+       
 
-        if (stream != null && stream.DataAvailable)
-        {
-            popups =  FindAnyObjectByType<Popups>();
-            bodyOrganManager = FindAnyObjectByType<BodyOrganManager>();
-            TMP_Text server_status_text = popups.ServerStatusText;
-            try 
-            {
-                byte[] lengthPrefix = new byte[4];
-                stream.Read(lengthPrefix, 0, 4);
-                int dataLength = BitConverter.ToInt32(lengthPrefix, 0);
+        if (isConnected) {
+            StartCoroutine(PingServer());
 
-                byte[] data = new byte[dataLength];
-                stream.Read(data, 0, dataLength);
+            if (userRoleStr == "Host") {
+                if (stream != null && stream.DataAvailable) {
+                    string jsonStream = ReadJsonStream();
 
-                string json = Encoding.UTF8.GetString(data);
-                Position position = JsonUtility.FromJson<Position>(json);
-                
-                if(position != null){
-                    if(!bodyOrganManager.enableZooming){
-                       // Vector3 vectorPosition = JsonUtility.FromJson<Vector3>(json);
-                        Vector3 vectorPosition = new Vector3(position.x, position.y, position.z);
-                        UpdateVectorPosition(vectorPosition);
-                    }
+                    if (!string.IsNullOrEmpty(jsonStream)){
+                        // Debug.Log(jsonStream);
 
 
                         
-                    // Vector3 vectorPosition = JsonUtility.FromJson<Vector3>(json);
-                   
-                }
-                
-                QueueMessage queueMessage = JsonUtility.FromJson<QueueMessage>(json);
+                    // popups =  FindAnyObjectByType<Popups>();
+                    // bodyOrganManager = FindAnyObjectByType<BodyOrganManager>();
+                    // TMP_Text server_status_text = popups.ServerStatusText;
 
-                if(queueMessage != null){
-                    PlayerData playerData = saveLoadManager.LoadPlayerData();
-                    TMP_Text tmp_queue_text = popups.QueueingMessageText;
 
-                    if(playerData != null && playerData.playerUUID == queueMessage.uuid){
-                        tmp_queue_text.text = queueMessage.queue;
-                    }else{
-                        tmp_queue_text.text = "";
+                    // Position position = JsonUtility.FromJson<Position>(json);
+                    // if (position != null) {
+                    //     if(!bodyOrganManager.enableZooming){
+                    //        // Vector3 vectorPosition = JsonUtility.FromJson<Vector3>(json);
+                    //         Vector3 vectorPosition = new Vector3(position.x, position.y, position.z);
+                    //         UpdateVectorPosition(vectorPosition);
+                    //     }
+                    //     // Vector3 vectorPosition = JsonUtility.FromJson<Vector3>(json);
+                    // }
                     }
                 }
-                
-            } 
-            catch (Exception e) 
-            {
-                Debug.LogError("Error reading from stream: " + e.Message);
-                isConnected = false;
-                StopCoroutine(reconnectCoroutine);
-                reconnectCoroutine = StartCoroutine(ReconnectToServer(server_status_text));
-            } 
+            }
 
+            else if ( userRoleStr == "Guest")
+            {
+                if ( stream != null && stream.DataAvailable) {
+                    string jsonStream = ReadJsonStream();
+                    Debug.Log(jsonStream);
+                    if (!string.IsNullOrEmpty(jsonStream)){
+
+                        PositionRotation positionRotation = JsonUtility.FromJson<PositionRotation>(jsonStream);
+                        if (positionRotation != null)
+                        {
+                            UpdateGameObject(positionRotation);
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Failed to deserialize PositionRotation from JSON.");
+                        }
+
+                    }
+
+
+                }
+                    
+                    // QueueMessage queueMessage = JsonUtility.FromJson<QueueMessage>(json);
+                    // if (queueMessage != null) {
+                    //     PlayerData playerData = saveLoadManager.LoadPlayerData();
+                    //     TMP_Text tmp_queue_text = popups.QueueingMessageText;
+
+                    //     if(playerData != null && playerData.playerUUID == queueMessage.uuid){
+                    //         tmp_queue_text.text = queueMessage.queue;
+                    //     }else{
+                    //         tmp_queue_text.text = "";
+                    //     }
+                    // }
+                    
+                
+
+            }
         }
     }
+
+    string ReadJsonStream() {
+        try 
+        {
+            byte[] lengthPrefix = new byte[4];
+            stream.Read(lengthPrefix, 0, 4);
+            int dataLength = BitConverter.ToInt32(lengthPrefix, 0);
+
+            byte[] data = new byte[dataLength];
+            stream.Read(data, 0, dataLength);
+
+            string json = Encoding.UTF8.GetString(data);
+            return json;
+        } 
+        catch (Exception e) 
+        {
+            Debug.LogError("Error reading from stream: " + e.Message);
+            return "";
+        } 
+    }
+
+    void ConnectToServer() {
+       
+        if (!isConnected) {
+            popups =  FindAnyObjectByType<Popups>();
+            TMP_Text server_status_text = popups.ServerStatusText;
+
+            Debug.Log("Attempting to connect to server...");
+            try
+            {
+                client = new TcpClient(serverAddress, port);
+                stream = client.GetStream();
+                isConnected = true;
+
+                Debug.Log("Connected to Python server.");
+                server_status_text.text = Store.ServerOnline;
+
+                if (reconnectCoroutine != null)
+                {
+                    StopCoroutine(reconnectCoroutine);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Connection failed: " + e.Message);
+                isConnected = false;
+
+                if (reconnectCoroutine == null)
+                {
+                    reconnectCoroutine = StartCoroutine(ReconnectToServer(server_status_text));
+                }
+            }
+        }   
+    }
+
+    IEnumerator ReconnectToServer(TMP_Text server_status_text)
+    {
+        while (!isConnected)
+        {
+            server_status_text.text = "Reconnecting back to the server....";
+            Debug.Log("Reconnecting to server...");
+            yield return new WaitForSeconds(reconnectInterval);
+
+            try
+            {
+                client = new TcpClient(serverAddress, port);
+                stream = client.GetStream();
+                isConnected = true;
+                server_status_text.text = Store.ServerOnline;
+                Debug.Log("Reconnected to Python server.");
+
+            }
+            catch (Exception e)
+            {
+                isConnected = false;
+                Debug.LogError("Reconnection failed: " + e.Message);
+                server_status_text.text = "Reconnection Failed...";
+            }
+        }
+
+        reconnectCoroutine = null;
+    }
+
+    IEnumerator PingServer()
+    {
+        yield return new WaitForSeconds(3f);
+
+        try
+        {
+            PlayerData playerData = saveLoadManager.LoadPlayerData();
+            string uuids = playerData.playerUUID;
+            string json = $"{{\"uuid\":\"{uuids}\", \"role\":\"{userRoleStr}\", \"message\":\"PING\"}}"; // $"{{\"uuid\":\"{uuids}\",\"message\":\"{typeSelected}\"}}";
+            byte[] data = Encoding.UTF8.GetBytes(json);
+            byte[] lengthPrefix = BitConverter.GetBytes(data.Length);
+
+            stream.Write(lengthPrefix, 0, lengthPrefix.Length);
+            stream.Write(data, 0, data.Length);
+            
+        }
+        catch (Exception e)
+        {
+            isConnected = false;
+            Debug.LogError("Ping failed: " + e.Message);
+        }
+    }
+
+
 
     void SendJsonMessage()
     {
@@ -147,95 +292,93 @@ public class Services : MonoBehaviour
 
             stream.Write(lengthPrefix, 0, lengthPrefix.Length);
             stream.Write(data, 0, data.Length);
-
-            // Debug.Log("JSON message sent to server.");  
-
         }
         catch (Exception e)
         {
             Debug.LogError("Failed to send JSON message: " + e.Message);
-            isConnected = false;
-            if (reconnectCoroutine == null)
-            {
-                popups =  FindAnyObjectByType<Popups>();
-                TMP_Text server_status_text = popups.ServerStatusText;
-                reconnectCoroutine = StartCoroutine(ReconnectToServer(server_status_text));
-            }
+            // isConnected = false;
+            // if (reconnectCoroutine == null)
+            // {
+            //     popups =  FindAnyObjectByType<Popups>();
+            //     TMP_Text server_status_text = popups.ServerStatusText;
+            //     reconnectCoroutine = StartCoroutine(ReconnectToServer(server_status_text));
+            // }
         }
     }
 
+    void SendPositionRotation() {
+        PlayerData playerData = saveLoadManager.LoadPlayerData();
+        bodyOrganManager = FindAnyObjectByType<BodyOrganManager>();
 
+        GameObject organ = bodyOrganManager.ActiveObject;
 
-    void ConnectToServer(){
-       
-        if (isConnecting) return;
+        if (organ != null) {
+            Transform organTransform = organ.transform;
+            Vector3 position = organTransform.position;
+            Vector3 rotation = organTransform.eulerAngles;
 
-        isConnecting = true;
-        popups =  FindAnyObjectByType<Popups>();
-        TMP_Text server_status_text = popups.ServerStatusText;
+            // Format position and rotation as JSON
+            string uuids = playerData.playerUUID;
+            string typeSelected = organ.name.ToLower().Trim(); // Assuming bodyOrganName is defined elsewhere
 
-        Debug.Log("Attempting to connect to server...");
-        try
-        {
-            client = new TcpClient(serverAddress, port);
-            stream = client.GetStream();
-            isConnecting = false;
-            isConnected = true;
+            string json = $"{{\"uuid\":\"{uuids}\", \"role\":\"{userRoleStr}\", \"message\":\"{typeSelected}\", \"position\":{{\"x\":{position.x},\"y\":{position.y},\"z\":{position.z}}},\"rotation\":{{\"x\":{rotation.x},\"y\":{rotation.y},\"z\":{rotation.z}}}}}";
+            // Debug.Log(json);
+            byte[] data = Encoding.UTF8.GetBytes(json);
+            byte[] lengthPrefix = BitConverter.GetBytes(data.Length);
 
-            Debug.Log("Connected to Python server.");
-            server_status_text.text = Store.ServerOnline;
-            if (reconnectCoroutine != null)
-            {
-                StopCoroutine(reconnectCoroutine);
-            }
-        }
-        catch (Exception e)
-        {
-            Debug.LogError("Connection failed: " + e.Message);
-            isConnecting = false;
-            if (reconnectCoroutine == null)
-            {
-                reconnectCoroutine = StartCoroutine(ReconnectToServer(server_status_text));
-            }
-        }
-    }
-
-    IEnumerator ReconnectToServer(TMP_Text server_status_text)
-    {
-        while (!isConnected)
-        {
-            server_status_text.text = "Reconnecting back to the server....";
-            Debug.Log("Reconnecting to server...");
-            yield return new WaitForSeconds(reconnectInterval);
-
-            try
-            {
-                client = new TcpClient(serverAddress, port);
-                stream = client.GetStream();
-                isConnected = true;
-                server_status_text.text = Store.ServerOnline;
-                Debug.Log("Reconnected to Python server.");
-            }
-            catch (Exception e)
-            {
-                Debug.LogError("Reconnection failed: " + e.Message);
-                server_status_text.text = "Reconnection Failed...";
-            }
+            stream.Write(lengthPrefix, 0, lengthPrefix.Length);
+            stream.Write(data, 0, data.Length);
         }
 
-        reconnectCoroutine = null;
+            
+        
     }
     void UpdateVectorPosition(Vector3 vectorPosition)
     {
         // Example: Update a UI element or game object with the new position
-        foreach(GameObject organ in organs){
-            if(organ.activeSelf){
+        // foreach(GameObject organ in bodyOrganManager.Organs){
+        //     if(organ.activeSelf){
+        //         organ.transform.localPosition = vectorPosition;
+        //     }
+        // }
+
+        bodyOrganManager = FindAnyObjectByType<BodyOrganManager>();
+
+        if (bodyOrganManager != null) {
+            GameObject organ = bodyOrganManager.ActiveObject;
+            if (organ != null) {
                 organ.transform.localPosition = vectorPosition;
             }
         }
+
         // cube.transform.localPosition = vectorPosition;
         // cube.SetActive(true);
         // Implement logic to update your Unity scene with the heart position
+    }
+
+    void UpdateGameObject(PositionRotation posRot) 
+    {
+        if (posRot != null)
+        {
+            previousPosition = new Vector3(posRot.positionX, posRot.positionY, posRot.positionZ);
+            previousRotation = Quaternion.Euler(posRot.rotationX, posRot.rotationY, posRot.rotationZ);
+        }
+        
+        bodyOrganManager = FindAnyObjectByType<BodyOrganManager>();
+        if (bodyOrganManager != null) {
+            GameObject organ = bodyOrganManager.ActiveObject;
+
+            if (organ != null) {
+                organ.transform.SetPositionAndRotation(previousPosition, previousRotation);
+            }
+        }
+
+
+        // foreach(GameObject organ in bodyOrganManager.Organs){
+        //     if (organ.activeSelf) {
+        //         organ.transform.SetPositionAndRotation(previousPosition, previousRotation);
+        //     }
+        // }
     }
 
     void OnDestroy()
@@ -286,24 +429,14 @@ public class Services : MonoBehaviour
         if (Image.IsNullOrEmpty(image))
             return;
 
-        // Debug.Log("\nImage Format: " + image.PixelFormat +
-        //           "\nImage Size: " + image.Width + " x " + image.Height +
-        //           "\nBuffer Size: " + image.BufferWidth + " x " + image.BufferHeight +
-        //           "\nImage Stride: " + image.Stride + "\n");
-
-        // Update the texture with the new frame
         image.CopyToTexture(mTexture, true);
         FlipTextureVertically(mTexture);
-        // Send the frame to the Python server
 
-        PlayerData playerData = saveLoadManager.LoadPlayerData();
-        BodyOrganName bodyOrganName = saveLoadManager.LoadBodyOrganName();
-
-        if(playerData != null && bodyOrganName != null){
-            SendJsonMessage();
+        if (userRoleStr == "Host") {
+            SendPositionRotation();
             SendFrameToServer(mTexture);
-            
         }
+
         Thread.Sleep(30);
     }
 
@@ -346,13 +479,13 @@ public class Services : MonoBehaviour
         catch (Exception e)
         {
             Debug.LogError("Failed to send frame: " + e.Message);
-            isConnected = false;
-            if (reconnectCoroutine == null)
-            {
-                popups =  FindAnyObjectByType<Popups>();
-                TMP_Text server_status_text = popups.ServerStatusText;
-                reconnectCoroutine = StartCoroutine(ReconnectToServer(server_status_text));
-            }
+            // isConnected = false;
+            // if (reconnectCoroutine == null)
+            // {
+            //     popups =  FindAnyObjectByType<Popups>();
+            //     TMP_Text server_status_text = popups.ServerStatusText;
+            //     reconnectCoroutine = StartCoroutine(ReconnectToServer(server_status_text));
+            // }
         }
     }
     void FlipTextureVertically(Texture2D texture)

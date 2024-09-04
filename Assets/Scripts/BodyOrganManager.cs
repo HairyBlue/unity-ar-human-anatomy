@@ -11,6 +11,7 @@ public class BodyOrganManager : MonoBehaviour
 
     [SerializeField]
     private GameObject OrganPanel;
+    
     [SerializeField]
     private GameObject bodyOrganInstruction;
 
@@ -25,12 +26,13 @@ public class BodyOrganManager : MonoBehaviour
     [SerializeField]
     private GameObject toggelZoomEnable;
     public GameObject zoomWrapper;
-
+    public string organNameLC = "";
     SaveLoadManager saveLoadManager = new SaveLoadManager();
     
     public bool enableZooming = false;
     private Popups popups;
 
+    public GameObject ActiveObject = null;
 
     public void OnClickOrganPanel(){
         OrganPanel.SetActive(!OrganPanel.activeSelf);
@@ -51,22 +53,26 @@ public class BodyOrganManager : MonoBehaviour
 
     }
     public void OnToggleOrgan(GameObject organToggler){
-        string organNameLC = organToggler.name.ToLower();
+        organNameLC = organToggler.name.ToLower();
 
-        OnClickRemoveActive();
+        if (ActiveObject != null){
+            organToggler.SetActive(false);
+            ActiveObject = null;
+        }
+
         CheckObjectOrganNames(organNameLC);
         saveLoadManager.SavaBodyOrganName(organNameLC);
-        // Debug.Log(organToggler.name.ToLower());
         organToggler.SetActive(true);
+        ActiveObject = organToggler;
     }
 
-    public void OnClickRemoveActive(){
-        foreach(GameObject organ in Organs){
-            if (organ.activeSelf) {
-                organ.SetActive(false);
-            }
-        } 
-    }
+    // public void OnClickRemoveActive(){
+    //     foreach(GameObject organ in Organs){
+    //         if (organ.activeSelf) {
+    //             organ.SetActive(false);
+    //         }
+    //     } 
+    // }
     
     public void OnClickToggleControloer(){
         toggelControler.SetActive(!toggelControler.activeSelf); 
