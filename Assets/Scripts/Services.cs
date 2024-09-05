@@ -18,10 +18,10 @@ public class Position
 }
 
 [System.Serializable]
-public class QueueMessage
+public class PopupMessage
 {
     public string uuid;
-    public string queue;
+    public string message;
 }
 
 
@@ -55,7 +55,7 @@ public class Services : MonoBehaviour
 
     private float reconnectInterval = 5f; 
     private Coroutine reconnectCoroutine;
-    SaveLoadManager saveLoadManager = new SaveLoadManager();
+    readonly SaveLoadManager saveLoadManager = new SaveLoadManager();
 
     private Popups popups;
     private BodyOrganManager bodyOrganManager;
@@ -92,6 +92,7 @@ public class Services : MonoBehaviour
 
     void Update()
     {
+
         TMP_Dropdown role = UserRole;
         userRoleStr = role.options[role.value].text;
     
@@ -99,70 +100,64 @@ public class Services : MonoBehaviour
        
 
         if (isConnected) {
+            // ping server
             StartCoroutine(PingServer());
 
-            if (userRoleStr == "Host") {
-                if (stream != null && stream.DataAvailable) {
-                    string jsonStream = ReadJsonStream();
+            if (stream != null && stream.DataAvailable) 
+            {
+                string jsonStream = ReadJsonStream();
 
-                    if (!string.IsNullOrEmpty(jsonStream)){
+                if (userRoleStr == "Host")
+                {
+                    if (!string.IsNullOrEmpty(jsonStream))
+                    {
                         // Debug.Log(jsonStream);
 
+                        PopupMessage popupMessage = JsonUtility.FromJson<PopupMessage>(jsonStream);
+                        Position position = JsonUtility.FromJson<Position>(jsonStream);
 
-                        
-                    // popups =  FindAnyObjectByType<Popups>();
-                    // bodyOrganManager = FindAnyObjectByType<BodyOrganManager>();
-                    // TMP_Text server_status_text = popups.ServerStatusText;
+                        if (popupMessage != null) 
+                        {
 
+                            PlayerData playerData = saveLoadManager.LoadPlayerData();
+                            TMP_Text tmp_queue_text = popups.QueueingMessageText;
 
-                    // Position position = JsonUtility.FromJson<Position>(json);
-                    // if (position != null) {
-                    //     if(!bodyOrganManager.enableZooming){
-                    //        // Vector3 vectorPosition = JsonUtility.FromJson<Vector3>(json);
-                    //         Vector3 vectorPosition = new Vector3(position.x, position.y, position.z);
-                    //         UpdateVectorPosition(vectorPosition);
-                    //     }
-                    //     // Vector3 vectorPosition = JsonUtility.FromJson<Vector3>(json);
-                    // }
+                            if (playerData != null && playerData.playerUUID == popupMessage.uuid) {
+                                tmp_queue_text.text = popupMessage.message;
+                            } else {
+                                tmp_queue_text.text = "";
+                            }
+                        }
+
+                        else if (position != null) 
+                        {
+                            if (!bodyOrganManager.enableZooming)
+                            {
+                                // Vector3 vectorPosition = JsonUtility.FromJson<Vector3>(json);
+                                Vector3 vectorPosition = new Vector3(position.x, position.y, position.z);
+                                UpdateVectorPosition(vectorPosition);
+                            }
+                            // Vector3 vectorPosition = JsonUtility.FromJson<Vector3>(json);
+                        }
+
+                        // popups =  FindAnyObjectByType<Popups>();
+                        // bodyOrganManager = FindAnyObjectByType<BodyOrganManager>();
+                        // TMP_Text server_status_text = popups.ServerStatusText;
+
                     }
                 }
-            }
-
-            else if ( userRoleStr == "Guest")
-            {
-                if ( stream != null && stream.DataAvailable) {
-                    string jsonStream = ReadJsonStream();
-                    Debug.Log(jsonStream);
-                    if (!string.IsNullOrEmpty(jsonStream)){
-
+                else if ( userRoleStr == "Guest")
+                {
+                    // Debug.Log(jsonStream);
+                    if (!string.IsNullOrEmpty(jsonStream))
+                    {
                         PositionRotation positionRotation = JsonUtility.FromJson<PositionRotation>(jsonStream);
                         if (positionRotation != null)
                         {
                             UpdateGameObject(positionRotation);
                         }
-                        else
-                        {
-                            Debug.LogWarning("Failed to deserialize PositionRotation from JSON.");
-                        }
-
                     }
-
-
                 }
-                    
-                    // QueueMessage queueMessage = JsonUtility.FromJson<QueueMessage>(json);
-                    // if (queueMessage != null) {
-                    //     PlayerData playerData = saveLoadManager.LoadPlayerData();
-                    //     TMP_Text tmp_queue_text = popups.QueueingMessageText;
-
-                    //     if(playerData != null && playerData.playerUUID == queueMessage.uuid){
-                    //         tmp_queue_text.text = queueMessage.queue;
-                    //     }else{
-                    //         tmp_queue_text.text = "";
-                    //     }
-                    // }
-                    
-                
 
             }
         }
