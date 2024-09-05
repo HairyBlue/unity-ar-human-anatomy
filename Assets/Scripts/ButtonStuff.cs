@@ -180,8 +180,10 @@ public class ButtonStuff : MonoBehaviour
     public void ConnectServer(){
 
         menuSettings = FindAnyObjectByType<MenuSettings>();
-        string pattern = @"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b";
-        string portPattern = @"^\d+$";
+        string domainPattern = @"^(?!\-)([A-Za-z0-9\-]{1,63}(?<!\-)\.)+[A-Za-z]{2,}$";
+        string ipPattern = @"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b";
+        string portPattern = @"^\d{2,}$";
+        
         TMP_InputField serverAddr = menuSettings.ServerAddress;
         TMP_InputField serverPort = menuSettings.ServerPort;
 
@@ -197,22 +199,24 @@ public class ButtonStuff : MonoBehaviour
             string serverStr = serverAddr.text.Trim();
             string portStr = serverPort.text.Trim();
 
-            if(Regex.IsMatch(serverStr, pattern) && Regex.IsMatch(portStr, portPattern)){
+            bool isValidAddress = Regex.IsMatch(serverStr, ipPattern) || Regex.IsMatch(serverStr, domainPattern);
+            bool isValidPort = Regex.IsMatch(portStr, portPattern);
+
+            if (isValidAddress && isValidPort) {
                 serverInfo.text = serverInfoTexts[3];
                 serverInfo.color = Color.green;
                 StartCoroutine(CheckServer(serverStr, portStr, serverStatus, serverErrorMsg));
+            } else {
+                if (!isValidAddress && !isValidPort) { 
+                    serverInfo.text = serverInfoTexts[0];
+                } else if (!isValidAddress) {
+                    serverInfo.text = serverInfoTexts[1];
+                } else if (!isValidPort) {
+                    serverInfo.text = serverInfoTexts[2];
+                }
+                serverInfo.color = Color.red;
             }
-            else if(!Regex.IsMatch(serverStr, pattern) || !Regex.IsMatch(portStr, portPattern)){
-                serverInfo.text = serverInfoTexts[0];
-                serverInfo.color = Color.red;
-            } else if (!Regex.IsMatch(serverStr, pattern) && Regex.IsMatch(portStr, portPattern)){
-                serverInfo.text = serverInfoTexts[1];
-                serverInfo.color = Color.red;
-            } else if (Regex.IsMatch(serverStr, pattern) && !Regex.IsMatch(portStr, portPattern)){
-                serverInfo.text = serverInfoTexts[2];
-                serverInfo.color = Color.red;
-            }
- 
+        
              checkValidAddress = StartCoroutine(CheckValidAddress(serverInfo));
         }
 
