@@ -107,15 +107,12 @@ public class Services : MonoBehaviour
             {
                 string jsonStream = ReadJsonStream();
 
+                PopupMessage popupMessage = JsonUtility.FromJson<PopupMessage>(jsonStream);
                 if (userRoleStr == "Host")
                 {
                     if (!string.IsNullOrEmpty(jsonStream))
                     {
                         // Debug.Log(jsonStream);
-
-                        PopupMessage popupMessage = JsonUtility.FromJson<PopupMessage>(jsonStream);
-                        Position position = JsonUtility.FromJson<Position>(jsonStream);
-
                         if (popupMessage != null) 
                         {
 
@@ -129,7 +126,8 @@ public class Services : MonoBehaviour
                             }
                         }
 
-                        else if (position != null) 
+                        Position position = JsonUtility.FromJson<Position>(jsonStream);
+                        if (position != null) 
                         {
                             if (!bodyOrganManager.enableZooming)
                             {
@@ -151,11 +149,26 @@ public class Services : MonoBehaviour
                     // Debug.Log(jsonStream);
                     if (!string.IsNullOrEmpty(jsonStream))
                     {
+                        if (popupMessage != null) 
+                        {
+
+                            PlayerData playerData = saveLoadManager.LoadPlayerData();
+                            TMP_Text tmp_queue_text = popups.QueueingMessageText;
+
+                            if (playerData != null && playerData.playerUUID == popupMessage.uuid) {
+                                tmp_queue_text.text = popupMessage.message;
+                            } else {
+                                tmp_queue_text.text = "";
+                            }
+                        }
+
+
                         PositionRotation positionRotation = JsonUtility.FromJson<PositionRotation>(jsonStream);
                         if (positionRotation != null)
                         {
                             UpdateGameObject(positionRotation);
                         }
+
                     }
                 }
 
