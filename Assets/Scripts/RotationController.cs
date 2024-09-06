@@ -6,15 +6,21 @@ using UnityEngine.EventSystems;
 
 public class RotationController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    public GameObject[] organs; 
+    // public GameObject[] organs; 
     public float rotationSpeed = 50f;
     private bool isRotating = false; 
     private Vector3 rotationAxis = Vector3.zero;
+
+    private BodyOrganManager bodyOrganManager;
+
     void Update()
     {
+        bodyOrganManager = FindAnyObjectByType<BodyOrganManager>();
+        GameObject organ = bodyOrganManager.ActiveObject;
+
         if (isRotating)
         {
-            foreach (GameObject organ in organs)
+            if ( organ != null)
             {
                 if (organ.activeSelf)
                 {
