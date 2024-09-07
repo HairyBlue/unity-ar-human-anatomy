@@ -34,6 +34,9 @@ public class BodyOrganManager : MonoBehaviour
 
     public GameObject ActiveObject = null;
 
+    private Quaternion previousRotation = Quaternion.identity;
+    private Vector3 previousPosition = Vector3.zero;
+    public GameObject ActiveObject2 = null;
     public void OnClickOrganPanel(){
         OrganPanel.SetActive(!OrganPanel.activeSelf);
     }
@@ -59,6 +62,9 @@ public class BodyOrganManager : MonoBehaviour
             organToggler.SetActive(false);
             ActiveObject = null;
         }
+
+        previousRotation = organToggler.transform.rotation;
+        previousPosition = organToggler.transform.position;
 
         CheckObjectOrganNames(organNameLC);
         saveLoadManager.SavaBodyOrganName(organNameLC);
@@ -97,19 +103,16 @@ public class BodyOrganManager : MonoBehaviour
         popups =  FindAnyObjectByType<Popups>();
         TMP_Text warmIfZoomingText = popups.warmIfZoomingText;
 
-
-        foreach (GameObject organ in Organs)
-        {
-            if (organ.activeSelf)
-            {
-                organ.transform.eulerAngles = Vector3.zero;
+        if (ActiveObject != null) {
+            if (ActiveObject.activeSelf) {
+                ActiveObject.transform.SetPositionAndRotation(previousPosition, previousRotation);
             }
         }
+
         enableZooming = false;
         toggelZoomEnable.SetActive(true);
         zoomWrapper.SetActive(false);
         warmIfZoomingText.text = "";
-       
     }
 
 }
