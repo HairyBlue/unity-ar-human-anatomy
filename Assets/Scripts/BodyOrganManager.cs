@@ -93,7 +93,7 @@ public class BodyOrganManager : MonoBehaviour
         enableZooming = true;
         toggelZoomEnable.SetActive(false);
         zoomWrapper.SetActive(true);
-         warmIfZoomingText.text = "Warn: Zooming In or out will disable the body tracking. Reset it back if you want to track.";
+        warmIfZoomingText.text = "Warn: Zooming In or out will disable the body tracking. Reset it back if you want to track.";
     
     }
 

@@ -166,7 +166,10 @@ public class Services : MonoBehaviour
                         PositionRotation positionRotation = JsonUtility.FromJson<PositionRotation>(jsonStream);
                         if (positionRotation != null)
                         {
-                            UpdateGameObject(positionRotation);
+                            if (!bodyOrganManager.enableZooming) {
+                                UpdateGameObject(positionRotation);
+                            }
+                            
                         }
 
                     }
