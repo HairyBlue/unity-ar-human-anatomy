@@ -1269,7 +1269,7 @@ MonoBehaviour:
   OrganPanel: {fileID: 240685154}
   bodyOrganInstruction: {fileID: 1744992723}
   Organs:
-  - {fileID: 0}
+  - {fileID: 1666901952}
   toggelControler: {fileID: 2054495311}
   toggelZoomEnable: {fileID: 1959210443}
   zoomWrapper: {fileID: 717827864}
@@ -4218,7 +4218,7 @@ MonoBehaviour:
         m_MethodName: OnToggleOrgan
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 1666901952}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -6952,12 +6952,12 @@ GameObject:
   - component: {fileID: 1666901955}
   - component: {fileID: 1666901954}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Heart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1666901953
 Transform:
   m_ObjectHideFlags: 0

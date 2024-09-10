@@ -127,6 +127,7 @@ public class Services : MonoBehaviour
                         }
 
                         Position position = JsonUtility.FromJson<Position>(jsonStream);
+                        bodyOrganManager = FindAnyObjectByType<BodyOrganManager>();
                         if (position != null) 
                         {
                             if (!bodyOrganManager.enableZooming)
@@ -164,6 +165,7 @@ public class Services : MonoBehaviour
 
 
                         PositionRotation positionRotation = JsonUtility.FromJson<PositionRotation>(jsonStream);
+                        bodyOrganManager = FindAnyObjectByType<BodyOrganManager>();
                         if (positionRotation != null)
                         {
                             if (!bodyOrganManager.enableZooming) {
