@@ -58,8 +58,8 @@ public class BodyOrganManager : MonoBehaviour
     public void OnToggleOrgan(GameObject organToggler){
         organNameLC = organToggler.name.ToLower();
 
-        if (ActiveObject != null){
-            organToggler.SetActive(false);
+        if (ActiveObject) {
+            ActiveObject.SetActive(false);
             ActiveObject = null;
         }
 
